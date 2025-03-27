@@ -1,16 +1,16 @@
 apiVersion: "kubeflow.org/v1"
 kind: PyTorchJob
 metadata:
-  name: qwenvl-1
+  name: qwenvl-2
   namespace: default  # Same namespace as etcd
 spec:
   elasticPolicy:
     rdzvBackend: etcd
     rdzvHost: etcd.default.svc.cluster.local  # Use FQDN
     rdzvPort: 2379
-    minReplicas: 1
+    minReplicas: 2
     maxReplicas: 2  # Match your worker replicas
-    maxRestarts: 2
+    maxRestarts: 1
     metrics:
       - type: Resource
         resource:
@@ -45,7 +45,7 @@ spec:
                 claimName: fsx-claim
           containers:
             - name: pytorch
-              image: 633205212955.dkr.ecr.us-east-1.amazonaws.com/nvcr-2409-sm-qwenvl:latest
+              image: public.ecr.aws/t5u4s6i0/nvcr-2409-smhp-qwenvl:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -61,10 +61,21 @@ spec:
                 value: "INFO"
               - name: NCCL_SOCKET_IFNAME
                 value: "^lo"
-              - name: FI_PROVIDER
-                value: efa
+              # for P5 FI_* should be commented out
+              #- name: FI_PROVIDER
+              #  value: efa
+              #- name: FI_EFA_USE_DEVICE_RDMA
+              #  value: "1"
+              #- name: FI_EFA_FORK_SAFE
+              #  value: "1"
+              #- name: FI_LOG_LEVEL
+              #  value: "1"
+              #- name: FI_EFA_ENABLE_SHM_TRANSFER
+              #  value: "1"
               - name: TORCH_DISTRIBUTED_DEBUG
                 value: "DETAIL"
+              - name: NCCL_IGNORE_DISABLED_P2P
+                value: "1"
               - name: TORCH_NCCL_ENABLE_MONITORING
                 value: "1"
               - name: TORCH_NCCL_TRACE_BUFFER_SIZE
@@ -104,9 +115,11 @@ spec:
                   export NNODES=2
                   export RDZV_BACKEND=etcd
                   export RDZV_ENDPOINT=$(ETCD_ENDPOINT)
-                  export RDZV_ID=qwvl-v1-$(TORCHELASTIC_RUN_ID)
+                  export RDZV_ID=qwvl-$(date +%Y%m%d-%H%M)
 
-                  echo "Start torchrun"
+                  nvidia-smi
+
+                  echo "Start torchrun ${RDZV_ID}"
                   
                   cd /mnt/fsx/Qwen2-VL-Finetune/
                   chmod +x /mnt/fsx/Qwen2-VL-Finetune/finetune_dist.sh
