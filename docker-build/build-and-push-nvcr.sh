@@ -1,6 +1,6 @@
 
 # img_name=dlc-torch2.6-ec2
-img_name=nvcr-2409-sm
+img_name=nvcr-2409-smhp
 
 docker build -t $img_name:latest -f 0.nvcr-pytorch-aws.dockerfile .
 

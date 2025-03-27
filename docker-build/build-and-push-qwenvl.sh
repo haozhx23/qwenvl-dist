@@ -1,6 +1,6 @@
 
 # img_name=dlc-torch2.6-ec2
-img_name=nvcr-2409-sm-qwenvl
+img_name=nvcr-2409-smhp-qwenvl
 
 docker build -t $img_name:latest -f qwenvl.dockerfile .
 
