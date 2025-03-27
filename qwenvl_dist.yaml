@@ -1,0 +1,126 @@
+apiVersion: "kubeflow.org/v1"
+kind: PyTorchJob
+metadata:
+  name: qwenvl-1
+  namespace: default  # Same namespace as etcd
+spec:
+  elasticPolicy:
+    rdzvBackend: etcd
+    rdzvHost: etcd.default.svc.cluster.local  # Use FQDN
+    rdzvPort: 2379
+    minReplicas: 1
+    maxReplicas: 2  # Match your worker replicas
+    maxRestarts: 2
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 90
+  pytorchReplicaSpecs:
+    Worker:
+      replicas: 2
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          labels:
+            app: qwenvl
+        spec:
+          volumes:
+            - name: shmem
+              hostPath: 
+                path: /dev/shm
+            - name: local
+              hostPath:
+                path: /mnt/k8s-disks/0
+            - name: local-cache
+              hostPath:
+                path: /opt/dlami/nvme/.cache
+            - name: inst-nvme
+              hostPath:
+                path: /opt/dlami/nvme/
+            - name: persistent-storage
+              persistentVolumeClaim:
+                claimName: fsx-claim
+          containers:
+            - name: pytorch
+              image: 633205212955.dkr.ecr.us-east-1.amazonaws.com/nvcr-2409-sm-qwenvl:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  nvidia.com/gpu: 4
+                  vpc.amazonaws.com/efa: 1
+                limits:
+                  nvidia.com/gpu: 4
+                  vpc.amazonaws.com/efa: 1
+              env:
+              - name: LOGLEVEL
+                value: "DEBUG"
+              - name: NCCL_DEBUG
+                value: "INFO"
+              - name: NCCL_SOCKET_IFNAME
+                value: "^lo"
+              - name: FI_PROVIDER
+                value: efa
+              - name: TORCH_DISTRIBUTED_DEBUG
+                value: "DETAIL"
+              - name: TORCH_NCCL_ENABLE_MONITORING
+                value: "1"
+              - name: TORCH_NCCL_TRACE_BUFFER_SIZE
+                value: "20000"
+              - name: TORCH_NCCL_DUMP_ON_TIMEOUT
+                value: "1"
+              - name: TORCH_NCCL_DEBUG_INFO_TEMP_FILE
+                value: "/local/nccl_trace_rank_"
+              - name: PYTORCH_CUDA_ALLOC_CONF
+                value: "expandable_segments:True"
+              - name: TORCH_NCCL_ASYNC_ERROR_HANDLING
+                value: "1"
+              # Add these environment variables for etcd connection
+              - name: TORCHELASTIC_USE_AGENT_STORE
+                value: "1"
+              - name: ETCD_ENDPOINT
+                value: "etcd.default.svc.cluster.local:2379"
+              # Generate a unique run_id for each job run
+              - name: TORCHELASTIC_RUN_ID
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.uid
+              # command: 
+                # - /usr/local/bin/torchrun
+                # - --nproc_per_node=4
+                # - --nnodes=2
+                # - --rdzv_backend=etcd
+                # - --rdzv_endpoint=$(ETCD_ENDPOINT)
+                # - --rdzv_id=fsdpv3-$(TORCHELASTIC_RUN_ID)
+                # - /fsdp/train.py
+                # - --max_context_width=4096
+              command: 
+                - /bin/bash
+                - -c
+                - |
+                  export NPROC_PER_NODE=4
+                  export NNODES=2
+                  export RDZV_BACKEND=etcd
+                  export RDZV_ENDPOINT=$(ETCD_ENDPOINT)
+                  export RDZV_ID=qwvl-v1-$(TORCHELASTIC_RUN_ID)
+
+                  echo "Start torchrun"
+                  
+                  cd /mnt/fsx/Qwen2-VL-Finetune/
+                  chmod +x /mnt/fsx/Qwen2-VL-Finetune/finetune_dist.sh
+                  ./finetune_dist.sh
+
+              volumeMounts:
+                - name: shmem
+                  mountPath: /dev/shm
+                - name: local
+                  mountPath: /local
+                - name: inst-nvme
+                  mountPath: /ckpt-path
+                - name: local-cache
+                  mountPath: /root/.cache
+                - name: persistent-storage
+                  mountPath: /mnt/fsx
+                

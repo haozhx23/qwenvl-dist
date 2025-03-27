@@ -1,0 +1,146 @@
+[
+    {
+      "id": "000000033471",
+      "image": "000000033471.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus in the image is white and red."
+        },
+        {
+          "from": "human",
+          "value": "What feature can be seen on the back of the bus?"
+        },
+        {
+          "from": "gpt",
+          "value": "The back of the bus features an advertisement."
+        },
+        {
+          "from": "human",
+          "value": "Is the bus driving down the street or pulled off to the side?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+        }
+      ]
+    },
+    {
+      "id": "000000033472",
+      "image": "000000033472.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus in the image is white and red."
+        }
+      ]
+    },
+    {
+      "id": "000000033473",
+      "image": "000000033473.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus in the image is white and red."
+        },
+        {
+          "from": "human",
+          "value": "What feature can be seen on the back of the bus?"
+        },
+        {
+          "from": "gpt",
+          "value": "The back of the bus features an advertisement."
+        }
+      ]
+    },
+    {
+      "id": "000000033474",
+      "image": "000000033474.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat feature can be seen on the back of the bus?"
+        },
+        {
+          "from": "gpt",
+          "value": "The back of the bus features an advertisement."
+        },
+        {
+          "from": "human",
+          "value": "Is the bus driving down the street or pulled off to the side?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+        }
+      ]
+    },
+    {
+      "id": "000000033475",
+      "image": "000000033475.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+        }
+      ]
+    },
+    {
+      "id": "000000033476",
+      "image": "000000033476.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+        }
+      ]
+    },
+    {
+      "id": "000000033477",
+      "image": "000000033477.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+        }
+      ]
+    },
+    {
+      "id": "000000033478",
+      "image": "000000033478.jpg",
+      "conversations": [
+        {
+          "from": "human",
+          "value": "<image>\nWhat are the colors of the bus in the image?"
+        },
+        {
+          "from": "gpt",
+          "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+        }
+      ]
+    }
+]
